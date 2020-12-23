@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<form>
+    <fields addfieldpath="/administrator/components/com_fabrik/models/fields" name="params">
+
+        <fieldset name="plg-form-online-contracts">
+
+            <field name="element_dbjoin"
+                   label="PLG_FABRIK_FORM_ONLINE_CONTRACTS_MODELO_LABEL"
+                   description="PLG_FABRIK_FORM_ONLINE_CONTRACTS_MODELO_DESC"
+                   size="30"
+                   type="listfields"
+            />
+
+            <field name="groupid_form"
+                   label="PLG_FABRIK_FORM_ONLINE_CONTRACTS_GROUPID_FORMULARIO_LABEL"
+                   description="PLG_FABRIK_FORM_ONLINE_CONTRACTS_GROUPID_FORMULARIO_DESC"
+                   size="30"
+                   type="number"
+            />
+
+            <field name="groupid_modelo_clausula"
+                   label="PLG_FABRIK_FORM_ONLINE_CONTRACTS_GROUPID_MODELO_CLAUSULA_LABEL"
+                   description="PLG_FABRIK_FORM_ONLINE_CONTRACTS_GROUPID_MODELO_CLAUSULA_DESC"
+                   size="30"
+                   type="number"
+            />
+
+            <field name="groupid_clausula_bloco"
+                   label="PLG_FABRIK_FORM_ONLINE_CONTRACTS_GROUPID_CLAUSULA_BLOCO_LABEL"
+                   description="PLG_FABRIK_FORM_ONLINE_CONTRACTS_GROUPID_CLAUSULA_BLOCO_DESC"
+                   size="30"
+                   type="number"
+            />
+
+
+        </fieldset>
+
+    </fields>
+</form>
