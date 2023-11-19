@@ -32,6 +32,12 @@
                    type="number"
             />
 
+              <field name="diff_id"
+                   label="PLG_FABRIK_FORM_ONLINE_CONTRACTS_DIFF_ID_LABEL"
+                   description="PLG_FABRIK_FORM_ONLINE_CONTRACTS_DIFF_ID_DESC"
+                   size="30"
+                   type="text"
+            />
 
         </fieldset>
 

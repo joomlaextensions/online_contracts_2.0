@@ -16,31 +16,10 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
     protected $newModelo;
 
     public function getTopContent() {
-        $this->instanceJS();
 
-        return true;
-    }
+    // User cant delete blocks
+    echo '<style> .fabrikGroupRepeater {display: none;}  </style>';
 
-    public function instanceJS() {
-        $input  = $this->app->input;
-        $rowId  = $input->get('rowid', '', 'string');
-        $view   = $input->get('view');
-
-        $jsFiles = array();
-        $jsFiles['Fabrik'] = 'media/com_fabrik/js/fabrik.js';
-        $jsFiles['FabrikOnlineContracts'] = 'plugins/fabrik_form/online_contracts/online_contracts.js';
-
-        $opts = new stdClass;
-        $opts->view     = $view;
-        $opts->rowid    = $rowId;
-        $opts->group    = 'group' . $this->getParams()->get('groupid_form');
-        $opts->url_pdf  = COM_FABRIK_LIVESITE . 'images/online_contracts/contract' . $rowId . '.pdf';
-        $opts->url_doc  = COM_FABRIK_LIVESITE . 'images/online_contracts/contract' . $rowId . '.doc';
-
-        $opts = json_encode($opts);
-
-        $script = "new FabrikOnlineContracts($opts);";
-        FabrikHelperHTML::script($jsFiles, $script);
     }
 
     protected function getFieldsModelo($id, $tableName) {
@@ -291,18 +270,42 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         $cabecalho  = $data->cabecalho;
 
         $i = 0;
-        $body = '';
+
+        $body ='';
 
         foreach ($obj->texto as $item) {
-            $tamString  = strlen($item);
-            $item       = substr($item, 3, $tamString-7);
+                    
+            // Dont remove <p> in the first block
+            if ($i) {
+            // Remove <p stuff ></> from begging 
+                $text = explode('>', $item, 2);
+                $item = $text[1];
+            }
+            // Remove </p> in the end
+            $item = substr($item, 0, -4);
+                        
             $body      .= $item . $obj->campo[$i];
 
             $i++;
         }
 
         $dom = new DOMDocument();
-        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $body);
+        
+        /* Default format removed from contract configuration
+        
+        // Insert default style here
+        $formModel  = $this->getModel();
+        
+        // Change in the future: style should be configured in backend 
+        $style  = $formModel->formData['formatacao'];
+         
+        */
+        
+        $style  = 'p { text-align:justify; }';
+        
+        $style  = '<style>' . $style . '</style>';
+        
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $style . $body);
 
         $output = $cabecalho . $dom->saveHTML() . $rodape;
 
@@ -311,10 +314,17 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 
     protected function makeDocuments($obj, $rowId) {
         $output = $this->getHTML($obj);
+        $params     = $this->getParams();
+        
+        if($params->get('diff_id') != '') {
+            $idDiff = str_replace(' ', '_', $params->get('diff_id')) . '_';
+        } else {
+            $idDiff = '';
+        }
 
-        $path_local = JPATH_BASE .  '/images/online_contracts/contract' . $rowId . '.pdf';
-        $path_html  = JPATH_BASE .  '/images/online_contracts/contract' . $rowId . '.html';
-        $path_doc   = 'file://' . JPATH_BASE .  '/images/online_contracts/contract' . $rowId . '.doc';
+        $path_local = JPATH_BASE .  '/images/online_contracts/' . $idDiff . 'contract' . $rowId . '.pdf';
+        $path_html  = JPATH_BASE .  '/images/online_contracts/' . $idDiff . 'contract' . $rowId . '.html';
+        $path_doc   = 'file://' . JPATH_BASE .  '/images/online_contracts/' . $idDiff . 'contract' . $rowId . '.doc';
 
         JFile::delete($path_local);
         JFile::write($path_html, $output);
@@ -324,13 +334,49 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         $htd = new HTML_TO_DOC();
         $htd->createDoc($path_html, $path_doc);
 
-        JFile::delete($path_html);
+        //Keep html
+        //JFile::delete($path_html);
     }
+
+    // Show buttons for pdf, doc, html 
+    
+    public function getBottomContent_result() {
+        $params     = $this->getParams();
+
+        if($params->get('diff_id') != '') {
+            $idDiff = str_replace(' ', '_', $params->get('diff_id')) . '_';
+        } else {
+            $idDiff = '';
+        }
+
+        $input  = $this->app->input;
+        $rid  = $input->get('rowid', '', 'string');
+        
+        if ($rid) {
+        
+        $buttons = '<div style="width:100%;text-align: center;"> <div class="btn-group" style="margin: 10px;">
+        
+        <a class="btn btn-primary" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.html?'. rand(99,9999) .'" target="_blank" style="margin: 5px;">Ver HTML</a>
+        <a class="btn btn-primary" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.pdf?'. rand(99,9999) .'"  target="_blank" style="margin: 5px;">Ver PDF</a>
+        <a class="btn btn-primary" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.doc?'. rand(99,9999) .'"  target="_blank" style="margin: 5px;">Ver DOC</a></div></div>';       
+        
+        return $buttons;
+        
+        }
+    }
+
 
     public function onDeleteRowsForm(&$groups)
     {
         $input = JFactory::getApplication()->input;
         $this->setId($input->get('Itemid'));
+        $params     = $this->getParams();
+        
+        if($params->get('diff_id') != '') {
+            $idDiff = str_replace(' ', '_', $params->get('diff_id')) . '_';
+        } else {
+            $idDiff = '';
+        }
         
         $formModel = $this->getModel();
         $ids       = $input->get('ids');
@@ -343,7 +389,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
             $db->setQuery("DELETE FROM " . $table . " WHERE parent_id = " . (int)$id);
             $db->execute();
 
-            JFile::delete(JPATH_BASE . '/images/online_contracts/contract' . $id . '.pdf');
+            JFile::delete(JPATH_BASE . '/images/online_contracts/' . $idDiff . 'contract' . $id . '.pdf');
         }
 
         return true;

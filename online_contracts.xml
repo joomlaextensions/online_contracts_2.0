@@ -1,13 +1,13 @@
 <?xml version="2.0" encoding="UTF-8" standalone="no"?>
 <extension group="fabrik_form" method="upgrade" type="plugin" version="3">
     <name>plg_fabrik_form_online_contracts</name>
-    <author>Ana Luiza</author>
-    <creationDate>December 2020</creationDate>
-    <copyright>Copyright (C) 2005-2018 Media A-Team, Inc. - All rights reserved.</copyright>
-    <license>GNU/GPL http://www.gnu.org/copyleft/gpl.html</license>
-    <authorEmail>hugh.messenger@gmail.com</authorEmail>
-    <authorUrl>www.fabrikar.com</authorUrl>
-    <version>3.9</version>
+    <author>Media A-Team, Inc.</author>
+	<creationDate>August 2021</creationDate>
+	<copyright>Copyright (C) 2005-2021 Media A-Team, Inc. - All rights reserved.</copyright>
+	<license>GNU/GPL http://www.gnu.org/copyleft/gpl.html</license>
+	<authorEmail>rob@pollen-8.co.uk</authorEmail>
+	<authorUrl>www.fabrikar.com</authorUrl>
+	<version>3.10</version>
     <help url="PLG_FORM_ONLINE_CONTRACTS_HELP_SERVER"/>
     <description>PLG_FORM_ONLINE_CONTRACTS_DESCRIPTION</description>
     <files>
