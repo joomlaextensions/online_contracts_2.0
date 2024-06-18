@@ -16,11 +16,36 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
     protected $newModelo;
 
     public function getTopContent() {
+        // User cant delete blocks
+        // JFactory::getDocument()->addStyleDeclaration('.fabrikGroupRepeater:first-of-type {display: none !important;}');
+        // JFactory::getDocument()->addScriptDeclaration("jQUery(document).ready(function() {
+        //     jQUery('.fabrikGroupRepeater:first').css('display', 'none');
+        //   });
+        // ");
 
-    // User cant delete blocks
-    echo '<style> .fabrikGroupRepeater {display: none;}  </style>';
+        // echo "<style>.fabrikSubGroup .fabrikGroupRepeater:first-of-type {display: none}</style>";
 
+        $groupIdForm = $this->getParams()->get("groupid_form");
+        $groups = array_keys($this->getModel()->getGroups());
+
+        $opts = new StdClass;
+		$opts->groupsId = $groups;
+        $opts->groupIdForm = $groupIdForm;
+
+        //$this->loadJS($opts);
     }
+
+    protected function loadJS($opts) {
+		$ext    = FabrikHelperHTML::isDebug() ? '.js' : '-min.js';
+
+		$optsJson = json_encode($opts);
+		$jsFiles = array();
+
+		$jsFiles['Fabrik'] = 'media/com_fabrik/js/fabrik.js';
+		$jsFiles['FabrikOnlineContracts'] = '/plugins/fabrik_form/online_contracts/online_contracts' . $ext;
+		$script = "var onlineContracts = new FabrikOnlineContracts($optsJson);";
+		FabrikHelperHTML::script($jsFiles, $script);
+	}
 
     protected function getFieldsModelo($id, $tableName) {
         $db     = JFactory::getDbo();
@@ -354,11 +379,11 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         
         if ($rid) {
         
-        $buttons = '<div style="width:100%;text-align: center;"> <div class="btn-group" style="margin: 10px;">
+        $buttons = '<div id="buttons_online_contract" style="width:100%;text-align: center;"> <div class="btn-group" style="margin: 10px;">
         
-        <a class="btn btn-primary" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.html?'. rand(99,9999) .'" target="_blank" style="margin: 5px;">Ver HTML</a>
         <a class="btn btn-primary" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.pdf?'. rand(99,9999) .'"  target="_blank" style="margin: 5px;">Ver PDF</a>
-        <a class="btn btn-primary" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.doc?'. rand(99,9999) .'"  target="_blank" style="margin: 5px;">Ver DOC</a></div></div>';       
+        <a class="btn btn-primary" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.doc?'. rand(99,9999) .'"  target="_blank" style="margin: 5px;">Ver DOC</a>       
+        <a class="btn btn-primary" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.html?'. rand(99,9999) .'" target="_blank" style="margin: 5px;">Ver HTML</a></div></div>';
         
         return $buttons;
         
