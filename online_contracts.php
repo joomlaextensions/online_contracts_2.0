@@ -393,6 +393,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 
     public function onDeleteRowsForm(&$groups)
     {
+        $db = JFactory::getDbo();
         $input = JFactory::getApplication()->input;
         $this->setId($input->get('Itemid'));
         $params     = $this->getParams();
@@ -408,13 +409,18 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         
         $groupid_form = $this->getParams()->get('groupid_form');
         $table        = $formModel->getTable()->db_table_name . '_' . $groupid_form . '_repeat';
+        
+        $db->setQuery("SELECT COUNT(`table_name`) FROM `INFORMATION_SCHEMA`.`tables` WHERE `table_schema` = (SELECT DATABASE()) AND `table_name` = '$table';")->execute();
 
-        $db = JFactory::getDbo();
-        foreach ($ids as $id) {
-            $db->setQuery("DELETE FROM " . $table . " WHERE parent_id = " . (int)$id);
-            $db->execute();
+        $table_exist = (bool) $db->setQuery("SELECT COUNT(`table_name`) FROM `INFORMATION_SCHEMA`.`tables` WHERE `table_schema` = (SELECT DATABASE()) AND `table_name` = '$table';")->loadResult();
+        if($table_exist) {
+            foreach ($ids as $id) {
 
-            JFile::delete(JPATH_BASE . '/images/online_contracts/' . $idDiff . 'contract' . $id . '.pdf');
+                $db->setQuery("DELETE FROM " . $table . " WHERE parent_id = " . (int)$id);
+                $db->execute();
+
+                JFile::delete(JPATH_BASE . '/images/online_contracts/' . $idDiff . 'contract' . $id . '.pdf');
+            }
         }
 
         return true;
