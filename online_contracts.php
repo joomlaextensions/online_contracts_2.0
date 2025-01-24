@@ -8,7 +8,6 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 include_once "htmltodoc/htmltodoc.class.php";
 
-
 class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 {
     protected $modeloElement;
@@ -365,7 +364,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 
     // Show buttons for pdf, doc, html 
     
-    public function getBottomContent_result() {
+    public function getBottomContent_result($c) {
         $params     = $this->getParams();
 
         if($params->get('diff_id') != '') {
