@@ -7,7 +7,7 @@
 	<license>GNU/GPL http://www.gnu.org/copyleft/gpl.html</license>
 	<authorEmail>contact@jlowcode.org</authorEmail>
 	<authorUrl>www.jlowcode.org</authorUrl>
-	<version>3.10</version>
+	<version>4</version>
     <help url="PLG_FORM_ONLINE_CONTRACTS_HELP_SERVER"/>
     <description>PLG_FORM_ONLINE_CONTRACTS_DESCRIPTION</description>
     <files>

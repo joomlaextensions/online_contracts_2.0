@@ -260,7 +260,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         $data = new stdClass();
 
         $dom_cabecalho = new DOMDocument();
-        $dom_cabecalho->loadHTML($result->intro);
+        !empty($result->intro) ? $dom_cabecalho->loadHTML($result->intro) : '';
         $imgs = $dom_cabecalho->getElementsByTagName('img');
 
         for($i = 0; $i < $imgs->length; $i++) {
@@ -273,7 +273,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         $data->cabecalho = $dom_cabecalho->saveHTML();
 
         $dom_rodape = new DOMDocument();
-        $dom_rodape->loadHTML($result->outro);
+        !empty($result->outro) ? $dom_rodape->loadHTML($result->outro) : '';
         $imgs = $dom_rodape->getElementsByTagName('img');
         
         for($i = 0; $i < $imgs->length; $i++) {
