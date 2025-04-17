@@ -351,6 +351,8 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         $path_doc   = 'file://' . JPATH_BASE .  '/images/online_contracts/' . $idDiff . 'contract' . $rowId . '.doc';
 
         JFile::delete($path_local);
+        JFile::delete($path_html);
+        JFile::delete($path_doc);
         JFile::write($path_html, $output);
 
         shell_exec('xvfb-run wkhtmltopdf ' . $path_html . ' ' . $path_local);
