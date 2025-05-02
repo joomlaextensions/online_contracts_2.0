@@ -382,9 +382,9 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         
         $buttons = '<div id="buttons_online_contract" style="width:100%;text-align: center;"> <div class="btn-group" style="margin: 10px;">
         
-        <a class="btn btn-primary" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.pdf?'. rand(99,9999) .'"  target="_blank" style="margin: 5px;">Ver PDF</a>
-        <a class="btn btn-primary" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.doc?'. rand(99,9999) .'"  target="_blank" style="margin: 5px;">Ver DOC</a>       
-        <a class="btn btn-primary" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.html?'. rand(99,9999) .'" target="_blank" style="margin: 5px;">Ver HTML</a></div></div>';
+        <a class="btn btn-primary btn-pitt" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.pdf?'. rand(99,9999) .'"  target="_blank" style="margin: 5px;">Ver PDF</a>
+        <a class="btn btn-primary btn-pitt" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.doc?'. rand(99,9999) .'"  target="_blank" style="margin: 5px;">Ver DOC</a>       
+        <a class="btn btn-primary btn-pitt" href="' . COM_FABRIK_LIVESITE . 'images/online_contracts/' . $idDiff . 'contract' . $rid . '.html?'. rand(99,9999) .'" target="_blank" style="margin: 5px;">Ver HTML</a></div></div>';
         
         return $buttons;
         
