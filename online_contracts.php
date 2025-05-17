@@ -8,6 +8,9 @@ require_once COM_FABRIK_FRONTEND . '/models/plugin-form.php';
 
 include_once "htmltodoc/htmltodoc.class.php";
 
+use Joomla\Filesystem\File;
+use Joomla\CMS\Factory;
+
 class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 {
     protected $modeloElement;
@@ -15,23 +18,12 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
     protected $newModelo;
 
     public function getTopContent() {
-        // User cant delete blocks
-        // JFactory::getDocument()->addStyleDeclaration('.fabrikGroupRepeater:first-of-type {display: none !important;}');
-        // JFactory::getDocument()->addScriptDeclaration("jQUery(document).ready(function() {
-        //     jQUery('.fabrikGroupRepeater:first').css('display', 'none');
-        //   });
-        // ");
-
-        // echo "<style>.fabrikSubGroup .fabrikGroupRepeater:first-of-type {display: none}</style>";
-
         $groupIdForm = $this->getParams()->get("groupid_form");
         $groups = array_keys($this->getModel()->getGroups());
 
         $opts = new StdClass;
 		$opts->groupsId = $groups;
         $opts->groupIdForm = $groupIdForm;
-
-        //$this->loadJS($opts);
     }
 
     protected function loadJS($opts) {
@@ -47,7 +39,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 	}
 
     protected function getFieldsModelo($id, $tableName) {
-        $db     = JFactory::getDbo();
+        $db = Factory::getContainer()->get('DatabaseDriver');
         $query  = $db->getQuery(true);
 
         $query
@@ -62,7 +54,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
     }
 
     protected function getTableGroup($group) {
-        $db     = JFactory::getDbo();
+        $db = Factory::getContainer()->get('DatabaseDriver');
         $query  = $db->getQuery(true);
         
         $query
@@ -91,7 +83,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
     }
 
     protected function setModelo($type) {
-        $db         = JFactory::getDbo();
+        $db = Factory::getContainer()->get('DatabaseDriver');
         $formModel  = $this->getModel();
         $listName   = $formModel->getTableName();
         $rowId      = $formModel->formData[$listName . '___id'];
@@ -155,7 +147,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
     }
 
     protected function updateFields($rowId, $table, $rows) {
-        $db     = JFactory::getDbo();
+        $db = Factory::getContainer()->get('DatabaseDriver');
         $query  = $db->getQuery(true);
         
         $query
@@ -173,9 +165,8 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
     protected function setFields() {
         $formModel  = $this->getModel();
         $params     = $this->getParams();
-        $input      = JFactory::getApplication()->input;
+        $db = Factory::getContainer()->get('DatabaseDriver');
         $rowId      = $formModel->formData[$formModel->getTableName() . '___id'];
-        //$rowId = $formModel->getRowId();
         
         $modeloElement   = $this->modeloElement;
         $groupIdForm     = $params->get('groupid_form');
@@ -206,7 +197,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 
         $field = new stdClass();
 
-        $db     = JFactory::getDbo();
+        $db = Factory::getContainer()->get('DatabaseDriver');
         $query  = $db->getQuery(true);
         
         $query
@@ -264,7 +255,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 
         $groupIdModelo = $params->get('groupid_modelo_clausula');
 
-        $db = JFactory::getDbo();
+        $db = Factory::getContainer()->get('DatabaseDriver');
         $db->setQuery("SELECT params FROM #__fabrik_groups WHERE id = " . (int) $groupIdModelo);
         $result = json_decode($db->loadResult());
 
@@ -305,11 +296,9 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         $cabecalho  = $data->cabecalho;
 
         $i = 0;
-
         $body ='';
 
-        foreach ($obj->texto as $item) {
-                    
+        foreach ($obj->texto as $item) {     
             // Dont remove <p> in the first block
             if ($i) {
             // Remove <p stuff ></> from begging 
@@ -317,27 +306,14 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
                 $item = $text[1];
             }
             // Remove </p> in the end
-            $item = substr($item, 0, -4);
-                        
+            $item = substr($item, 0, -4);       
             $body      .= $item . $obj->campo[$i];
-
             $i++;
         }
 
         $dom = new DOMDocument();
         
-        /* Default format removed from contract configuration
-        
-        // Insert default style here
-        $formModel  = $this->getModel();
-        
-        // Change in the future: style should be configured in backend 
-        $style  = $formModel->formData['formatacao'];
-         
-        */
-        
         $style  = 'p { text-align:justify; }';
-        
         $style  = '<style>' . $style . '</style>';
         
         $dom->loadHTML('<?xml encoding="utf-8" ?>' . $style . $body);
@@ -361,18 +337,15 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         $path_html  = JPATH_BASE .  '/images/online_contracts/' . $idDiff . 'contract' . $rowId . '.html';
         $path_doc   = 'file://' . JPATH_BASE .  '/images/online_contracts/' . $idDiff . 'contract' . $rowId . '.doc';
 
-        JFile::delete($path_local);
-        JFile::delete($path_html);
-        JFile::delete($path_doc);
-        JFile::write($path_html, $output);
+        is_file($path_local) ? File::delete($path_local) : null;
+        is_file($path_html) ? File::delete($path_html) : null;
+        is_file($path_doc) ? File::delete($path_doc) : null;
+        File::write($path_html, $output);
 
         shell_exec('xvfb-run wkhtmltopdf ' . $path_html . ' ' . $path_local);
 
         $htd = new HTML_TO_DOC();
         $htd->createDoc($path_html, $path_doc);
-
-        //Keep html
-        //JFile::delete($path_html);
     }
 
     // Show buttons for pdf, doc, html 
@@ -405,8 +378,8 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 
     public function onDeleteRowsForm(&$groups)
     {
-        $db = JFactory::getDbo();
-        $input = JFactory::getApplication()->input;
+        $db = Factory::getContainer()->get('DatabaseDriver');
+        $input = $this->app->getInput();
         $this->setId($input->get('Itemid'));
         $params     = $this->getParams();
         
@@ -431,7 +404,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
                 $db->setQuery("DELETE FROM " . $table . " WHERE parent_id = " . (int)$id);
                 $db->execute();
 
-                JFile::delete(JPATH_BASE . '/images/online_contracts/' . $idDiff . 'contract' . $id . '.pdf');
+                File::delete(JPATH_BASE . '/images/online_contracts/' . $idDiff . 'contract' . $id . '.pdf');
             }
         }
 
