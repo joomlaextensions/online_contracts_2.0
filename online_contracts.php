@@ -228,6 +228,17 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 
         $field->texto = $db->loadColumn();
 
+        $dom = new DOMDocument();
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $field->texto[0]);
+
+        $images = $dom->getElementsByTagName('img');
+        foreach ($images as $img) {
+            $src = $img->getAttribute('src');
+            $src = COM_FABRIK_LIVESITE . "/" . trim($src);
+            $img->setAttribute('src', $src);
+        }
+        $field->texto[0] = $dom->saveHTML();
+
         return $field;
     }
 
@@ -260,7 +271,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         $data = new stdClass();
 
         $dom_cabecalho = new DOMDocument();
-        !empty($result->intro) ? $dom_cabecalho->loadHTML($result->intro) : '';
+        !empty($result->intro) ? $dom_cabecalho->loadHTML('<?xml encoding="utf-8" ?>' . $result->intro) : '';
         $imgs = $dom_cabecalho->getElementsByTagName('img');
 
         for($i = 0; $i < $imgs->length; $i++) {
@@ -273,7 +284,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         $data->cabecalho = $dom_cabecalho->saveHTML();
 
         $dom_rodape = new DOMDocument();
-        !empty($result->outro) ? $dom_rodape->loadHTML($result->outro) : '';
+        !empty($result->outro) ? $dom_rodape->loadHTML('<?xml encoding="utf-8" ?>' . $result->outro) : '';
         $imgs = $dom_rodape->getElementsByTagName('img');
         
         for($i = 0; $i < $imgs->length; $i++) {
