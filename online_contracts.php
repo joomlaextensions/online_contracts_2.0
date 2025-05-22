@@ -224,8 +224,8 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 
         $images = $dom->getElementsByTagName('img');
         foreach ($images as $img) {
-            $src = $img->getAttribute('src');
-            $src = COM_FABRIK_LIVESITE . "/" . trim($src);
+            $src = trim($img->getAttribute('src'));
+            $src = stripos($src, 'http') >= 0 ? $src : COM_FABRIK_LIVESITE . "/" . $src;
             $img->setAttribute('src', $src);
         }
         $field->texto[0] = $dom->saveHTML();
