@@ -165,7 +165,7 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
     protected function setFields() {
         $formModel  = $this->getModel();
         $params     = $this->getParams();
-        $db = Factory::getContainer()->get('DatabaseDriver');
+        $input      = $this->app->getInput();
         $rowId      = $formModel->formData[$formModel->getTableName() . '___id'];
         
         $modeloElement   = $this->modeloElement;
