@@ -10,6 +10,7 @@ include_once "htmltodoc/htmltodoc.class.php";
 
 use Joomla\Filesystem\File;
 use Joomla\CMS\Factory;
+use Fabrik\Helpers\Pdf;
 
 class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
 {
@@ -342,7 +343,8 @@ class PlgFabrik_FormOnline_contracts extends PlgFabrik_Form
         is_file($path_doc) ? File::delete($path_doc) : null;
         File::write($path_html, $output);
 
-        shell_exec('xvfb-run wkhtmltopdf ' . $path_html . ' ' . $path_local);
+		$pdf = Pdf::renderDomPdf($output);
+        File::write($path_local, $pdf);
 
         $htd = new HTML_TO_DOC();
         $htd->createDoc($path_html, $path_doc);
